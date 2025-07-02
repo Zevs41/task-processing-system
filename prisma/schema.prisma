@@ -1,0 +1,32 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ETaskPriority {
+  high
+  medium
+  low
+}
+
+enum ETaskStatus {
+  pending
+  processing
+  completed
+}
+
+model Task {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String
+  description String
+  priority    ETaskPriority
+  status      ETaskStatus   @default(pending)
+  createdAt   DateTime      @default(now()) @db.Timestamptz
+  startedAt   DateTime?     @db.Timestamptz
+  completedAt DateTime?     @db.Timestamptz
+}
