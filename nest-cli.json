@@ -6,7 +6,6 @@
     "plugins": ["@nestjs/swagger"],
     "deleteOutDir": true
   },
-  "monorepo": true,
   "projects": {
     "api": {
       "type": "application",
