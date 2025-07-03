@@ -1,11 +1,17 @@
 import { NestFactory } from '@nestjs/core';
-import { WorkerModule } from './worker.module';
+import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { ConfigService } from '@nestjs/config';
+import { IConfig } from 'core/config/config.interface';
+import { WinstonModule } from 'nest-winston';
+import { loggerOptions } from 'core/logger/winston.logger';
+import { GlobalExceptionFilter } from 'core/exception/filters/global-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    WorkerModule,
+    AppModule,
     {
+      bufferLogs: true,
       transport: Transport.RMQ,
       options: {
         urls: [
@@ -18,6 +24,14 @@ async function bootstrap() {
       },
     },
   );
+
+  const appConfig: ConfigService<IConfig> = app.get(ConfigService);
+
+  const env = appConfig.getOrThrow<string>('nodeEnv');
+
+  app.useLogger(WinstonModule.createLogger(loggerOptions(env)));
+
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   await app.listen();
 }

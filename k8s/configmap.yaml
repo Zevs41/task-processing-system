@@ -1,0 +1,15 @@
+apiVersion: v1
+
+kind: ConfigMap
+
+metadata:
+  name: config
+
+data:
+  DATABASE_URL: 'postgresql://user:password@192.168.49.3:5432/taskdb'
+  RABBITMQ_URL: 'amqp://user:password@192.168.49.4:5672'
+  RABBITMQ_QUEUE_NAME: 'tasks'
+  NODE_ENV: 'production'
+  WORKER_TIMEOUT: '600000'
+  MAX_RETRIES: '3'
+  PORT: '3000'

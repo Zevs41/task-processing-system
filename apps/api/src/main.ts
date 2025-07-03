@@ -3,12 +3,12 @@ import { AppModule } from './app.module';
 import { WinstonModule } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
-import { IConfig } from './libs/config/config.interface';
-import { GlobalExceptionFilter } from './libs/exceptions/filters/global-exception.filter';
+import { IConfig } from 'core/config/config.interface';
+import { GlobalExceptionFilter } from 'core/exception/filters/global-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { loggerOptions } from './libs/logger/winston.logger';
+import { loggerOptions } from '../../../core/logger/winston.logger';
 import type { ValidationError } from 'class-validator';
-import { ValidateException } from './libs/exceptions/validate.exception';
+import { ValidateException } from 'core/exception/validate.exception';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

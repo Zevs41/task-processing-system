@@ -1,0 +1,19 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: worker-scaledobject
+spec:
+  scaleTargetRef:
+    name: worker-deployment
+  minReplicaCount: 2
+  maxReplicaCount: 10
+  triggers:
+    - type: rabbitmq
+      metadata:
+        host: amqp://user:password@192.168.49.4:5672
+        queueName: tasks
+        queueLength: '10'
+    - type: cpu
+      metadata:
+        type: Utilization
+        value: '70'

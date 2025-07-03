@@ -1,33 +1,23 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import { PrismaService } from '../../libs/prisma/prisma.service';
 import { ReqCreateTaskDto } from '../../models/task/req-create-task.dto';
 import { ResTaskPaginationDto } from '../../models/task/res-task-pagination.dto';
 import { ConfigService } from '@nestjs/config';
-import { IConfig } from '../../libs/config/config.interface';
+import { IConfig } from 'core/config/config.interface';
 import { ResCreateTaskDto } from '../../models/task/res-create-task.dto';
-import { RabbitService } from '../../libs/rabbit/rabbit.service';
+import { RabbitService } from '../../../../../core/rabbit/rabbit.service';
+import { TaskRepository } from 'core/domains/task/task.repository';
 
 @Injectable()
 export class TaskService {
   constructor(
-    private readonly prismaService: PrismaService,
+    private readonly taskRepository: TaskRepository,
     private readonly rabbitService: RabbitService,
     private readonly configService: ConfigService<IConfig>,
   ) {}
 
   async createOne(data: ReqCreateTaskDto): Promise<ResCreateTaskDto> {
-    const task = await this.prismaService.task.create({
-      data: data,
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        priority: true,
-        status: true,
-        createdAt: true,
-      },
-    });
+    const task = await this.taskRepository.createOne(data);
 
     await this.rabbitService.sendMessage(
       this.configService.getOrThrow('rabbitmqQueueName'),
@@ -38,37 +28,10 @@ export class TaskService {
   }
 
   async getOne(id: string) {
-    return this.prismaService.task.findUniqueOrThrow({ where: { id: id } });
+    return this.taskRepository.getOne(id);
   }
 
   async getPage(page: number, limit: number): Promise<ResTaskPaginationDto> {
-    const [count, tasks] = await this.prismaService.$transaction([
-      this.prismaService.task.count(),
-      this.prismaService.task.findMany({
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-    ]);
-
-    return {
-      tasks,
-      page,
-      limit,
-      total: count,
-    };
-  }
-
-  async imitatateTaskProceceed(taskId: string) {
-    await this.prismaService.task.update({
-      where: { id: taskId },
-      data: { status: 'processing' },
-    });
-
-    setTimeout(async () => {
-      await this.prismaService.task.update({
-        where: { id: taskId },
-        data: { status: 'completed' },
-      });
-    }, 600 * 1000);
+    return this.taskRepository.getPage(page, limit);
   }
 }

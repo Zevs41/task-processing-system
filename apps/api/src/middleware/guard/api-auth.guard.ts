@@ -2,9 +2,9 @@ import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { BackendException } from '../../libs/exceptions/backend.exception';
-import { EErrorCode } from '../../libs/exceptions/enums/error-code.enum';
-import { IConfig } from '../../libs/config/config.interface';
+import { BackendException } from 'core/exception/backend.exception';
+import { EErrorCode } from 'core/exception/enums/error-code.enum';
+import { IConfig } from 'core/config/config.interface';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
