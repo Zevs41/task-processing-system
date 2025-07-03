@@ -6,4 +6,6 @@ export interface IConfig {
 
   rabbitmqUrl: string;
   rabbitmqQueueName: string;
+
+  workerTimeout: number;
 }

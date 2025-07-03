@@ -1,6 +1,5 @@
 import type { ErrorHttpStatusCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { Injectable } from '@nestjs/common';
-
 import { EErrorCode } from './enums/error-code.enum';
 import { IError } from './interfaces/error.interface';
 import { errorsDeclaration } from './declarations/errors-declaration';

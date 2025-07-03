@@ -4,10 +4,15 @@ import { PrismaService } from 'core/prisma/prisma.service';
 import { ReqCreateTaskDto } from 'apps/api/src/models/task/req-create-task.dto';
 import { ResCreateTaskDto } from 'apps/api/src/models/task/res-create-task.dto';
 import { ResTaskPaginationDto } from 'apps/api/src/models/task/res-task-pagination.dto';
+import { ConfigService } from '@nestjs/config';
+import { IConfig } from 'core/config/config.interface';
 
-Injectable();
+@Injectable()
 export class TaskRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly configService: ConfigService<IConfig>,
+  ) {}
 
   async createOne(data: ReqCreateTaskDto): Promise<ResCreateTaskDto> {
     return this.prismaService.task.create({
@@ -55,6 +60,6 @@ export class TaskRepository {
         where: { id: taskId },
         data: { status: 'completed', completedAt: new Date() },
       });
-    }, 6009);
+    }, this.configService.getOrThrow('workerTimeout'));
   }
 }

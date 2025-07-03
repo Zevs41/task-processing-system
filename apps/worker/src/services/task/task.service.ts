@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-
 import { TaskRepository } from 'core/domains/task/task.repository';
 
 @Injectable()

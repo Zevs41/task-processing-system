@@ -8,5 +8,6 @@ export const Config = (): IConfig => {
     rabbitmqQueueName:
       process.env.RABBITMQ_QUEUE_NAME || 'amqp://user:password@localhost:5672',
     rabbitmqUrl: process.env.RABBITMQ_URL || 'queue',
+    workerTimeout: Number(process.env.WORKER_TIMEOUT) || 600 * 1000,
   };
 };
