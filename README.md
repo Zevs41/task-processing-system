@@ -38,9 +38,11 @@ cd task-processing-system
 ```bash
 $ yarn install
 
+$ linux mv .env.example .env | windows rename .env.example .env
+
 $ yarn run migration:run
 
-$ yarn npx prisma generate
+$ yarn prisma generate
 
 $ yarn start:worker:dev
 
